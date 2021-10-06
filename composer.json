@@ -1,0 +1,22 @@
+{
+    "name": "oscaner/project-vm",
+    "description": "A VM for local project development, built with Vagrant + Ansible.",
+    "keywords": ["vagrant", "vm", "virtual machine"],
+    "homepage": "http://projectvm.oscaner.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oscaner Miao",
+            "email": "oscaner1997@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/oscaner/project-vm/issues",
+        "source": "https://github.com/oscaner/project-vm",
+        "docs": "http://projectvm.oscaner.com"
+    },
+    "require": {},
+    "config": {
+        "process-timeout": 1800
+    }
+}

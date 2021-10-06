@@ -1,0 +1,8 @@
+vagrant_box: geerlingguy/drupal-vm
+
+# Update the hostname to the local development environment hostname.
+vagrant_hostname: local.drupalvm.com
+vagrant_machine_name: drupalvm
+
+# Set the IP address so it doesn't conflict with other Project VM instances.
+vagrant_ip: 192.168.101.75
