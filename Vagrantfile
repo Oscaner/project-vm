@@ -65,4 +65,29 @@ Vagrant.configure('2') do |config|
   # Display an introduction message after `vagrant up` and `vagrant provision`.
   config.vm.post_up_message = vconfig.fetch('vagrant_post_up_message', get_default_post_up_message(vconfig))
 
+  # Sync the project root directory to /vagrant
+  unless vconfig['vagrant_synced_folders'].any? { |synced_folder| synced_folder['destination'] == '/vagrant' }
+    vconfig['vagrant_synced_folders'].push(
+      'local_path' => host_project_dir,
+      'destination' => '/vagrant'
+    )
+  end
+
+  # Synced folders.
+  vconfig['vagrant_synced_folders'].each do |synced_folder|
+    options = {
+      type: synced_folder.fetch('type', vconfig['vagrant_synced_folder_default_type']),
+      rsync__exclude: synced_folder['excluded_paths'],
+      rsync__args: ['--verbose', '--archive', '--delete', '-z', '--copy-links', '--chmod=ugo=rwX'],
+      id: synced_folder['id'],
+      create: synced_folder.fetch('create', false),
+      mount_options: synced_folder.fetch('mount_options', []),
+      nfs_udp: synced_folder.fetch('nfs_udp', false)
+    }
+    synced_folder.fetch('options_override', {}).each do |key, value|
+      options[key.to_sym] = value
+    end
+    config.vm.synced_folder synced_folder.fetch('local_path'), synced_folder.fetch('destination'), options
+  end
+
 end

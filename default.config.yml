@@ -16,3 +16,16 @@ project_vagrant_version_min: '2.2.0'
 vagrant_plugins:
   - name: vagrant-vbguest
   - name: vagrant-hostsupdater
+
+# A list of synced folders, with the keys 'local_path', 'destination', and
+# a 'type' of [nfs|rsync|smb] (leave empty for slow native shares).
+vagrant_synced_folders:
+  # The first synced folder will be used for the default Project installation, if
+  # any of the build_* settings are 'true'. By default the folder is set to
+  # the project-vm folder.
+  - local_path: .
+    destination: /var/www/projectvm
+    type: nfs
+    create: true
+
+vagrant_synced_folder_default_type: nfs
