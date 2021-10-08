@@ -33,6 +33,12 @@ vconfig = load_config(
   ]
 )
 
+# Verify Ansible version requirement.
+provisioner = vconfig['force_ansible_local'] ? :ansible_local : vagrant_provisioner
+if provisioner == :ansible
+  require_ansible_version ">= #{vconfig['project_ansible_version_min']}"
+end
+
 # Verify Vagrant version requirement.
 Vagrant.require_version ">= #{vconfig['project_vagrant_version_min']}"
 
@@ -88,6 +94,30 @@ Vagrant.configure('2') do |config|
       options[key.to_sym] = value
     end
     config.vm.synced_folder synced_folder.fetch('local_path'), synced_folder.fetch('destination'), options
+  end
+
+  # Prepare playbook
+  if provisioner == :ansible
+    playbook = "#{host_projectvm_dir}/provisioning/playbook.yml"
+    config_dir = host_config_dir
+  else
+    playbook = "#{guest_projectvm_dir}/provisioning/playbook.yml"
+    config_dir = guest_config_dir
+  end
+
+  # Ansible.
+  config.vm.provision 'projectvm', type: provisioner do |ansible|
+    ansible.compatibility_mode = '2.0'
+    ansible.playbook = playbook
+    ansible.extra_vars = {
+      config_dir: config_dir,
+      projectvm_env: projectvm_env,
+      ansible_python_interpreter: vconfig['ansible_python_interpreter']
+    }
+    ansible.raw_arguments = Shellwords.shellsplit(ENV['PROJECTVM_ANSIBLE_ARGS']) if ENV['PROJECTVM_ANSIBLE_ARGS']
+    ansible.tags = ENV['PROJECTVM_ANSIBLE_TAGS']
+    # Use pip to get the latest Ansible version when using ansible_local.
+    provisioner == :ansible_local && ansible.install_mode = 'pip3'
   end
 
 end

@@ -69,3 +69,40 @@ def walk(obj, &function)
     obj = yield(obj)
   end
 end
+
+# Return which Vagrant provisioner to use.
+def vagrant_provisioner
+  ansible_bin ? :ansible : :ansible_local
+end
+
+# Return the path to the ansible-playbook executable.
+def ansible_bin
+  @ansible_bin ||= which('ansible-playbook')
+end
+
+# Return the ansible version parsed from running the executable path provided.
+def ansible_version
+  /(#{Gem::Version::VERSION_PATTERN})/.match(`#{ansible_bin} --version`) { |match| return match[1] }
+end
+
+# Require that if installed, the ansible version meets the requirements.
+def require_ansible_version(requirement)
+  return unless ansible_bin
+
+  req = Gem::Requirement.new(requirement)
+  return if req.satisfied_by?(Gem::Version.new(ansible_version))
+
+  raise_message "You must install an Ansible version #{requirement} to use this version of Project VM."
+end
+
+# Cross-platform way of finding an executable in the $PATH.
+def which(cmd)
+  exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+  ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+    exts.each do |ext|
+      exe = File.join(path, "#{cmd}#{ext}")
+      return exe if File.executable?(exe) && !File.directory?(exe)
+    end
+  end
+  nil
+end

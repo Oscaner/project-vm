@@ -11,6 +11,7 @@ vagrant_public_ip: ""
 
 # Minimum required versions.
 project_vagrant_version_min: '2.2.0'
+project_ansible_version_min: '2.8'
 
 # Ensure vagrant plugins are installed.
 vagrant_plugins:
@@ -29,3 +30,8 @@ vagrant_synced_folders:
     create: true
 
 vagrant_synced_folder_default_type: nfs
+
+# Force use of ansible_local provisioner, even if Ansible is installed on host.
+force_ansible_local: false
+
+ansible_python_interpreter: python3
