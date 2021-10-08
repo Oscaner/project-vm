@@ -39,3 +39,8 @@ vagrant_synced_folder_default_type: nfs
 force_ansible_local: false
 
 ansible_python_interpreter: python3
+
+# Automatically fix timeout issues with NFS on macOS. See
+# https://github.com/geerlingguy/drupal-vm/issues/2154
+vagrant_nfs_fix_enabled: false
+vagrant_nfs_fix_keepalive_file: "/vagrant/tmp/.vagrant-nfs-fix-keepalive.tmp"
