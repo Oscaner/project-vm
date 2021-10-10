@@ -1,0 +1,15 @@
+---
+- name: Install required dependencies.
+  yum:
+    name:
+      - curl
+      - python3-pycurl
+      - unzip
+      - make
+      - gcc
+    state: present
+
+- name: Enable remi repo for MySQL.
+  set_fact:
+    mysql_enablerepo: remi
+  when: mysql_enablerepo is not defined or mysql_enablerepo == ""

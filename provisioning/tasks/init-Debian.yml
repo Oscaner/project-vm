@@ -1,0 +1,21 @@
+---
+- name: Update apt cache if needed.
+  apt: update_cache=true cache_valid_time=86400
+
+- name: Install required dependencies.
+  apt:
+    name:
+      - curl
+      - python3-apt
+      - python3-pycurl
+      - sudo
+      - unzip
+      - make
+    state: present
+
+# Ubuntu-specific tasks.
+- name: Add repository for Apache 2.4.9+ (Ubuntu 12/14).
+  apt_repository: repo='ppa:ondrej/apache2'
+  when:
+    - ansible_distribution_release == "precise" or ansible_distribution_release == "trusty"
+    - ansible_distribution == "Ubuntu"

@@ -10,6 +10,8 @@
     - import_tasks: tasks/config.yml
       tags: ['always']
 
+    - include_tasks: "tasks/init-{{ ansible_os_family }}.yml"
+
   roles:
     # Automatically fix timeout issues with NFS on macOS.
     # @see https://github.com/geerlingguy/drupal-vm/issues/2154
