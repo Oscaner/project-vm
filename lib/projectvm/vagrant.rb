@@ -106,3 +106,34 @@ def which(cmd)
   end
   nil
 end
+
+# Return a list of all virtualhost server names and aliases from a config hash.
+def get_vhost_aliases(vconfig)
+  if vconfig['project_webserver'] == 'apache'
+    aliases = get_apache_vhosts(vconfig['apache_vhosts'])
+  else
+    # @todo shim for `nginx_hosts`.
+    aliases = get_nginx_vhosts(vconfig.fetch('nginx_hosts', vconfig['nginx_vhosts']))
+  end
+  aliases = aliases.uniq - [vconfig['vagrant_ip']]
+  # Remove wildcard subdomains.
+  aliases.delete_if { |vhost| vhost.include?('*') }
+end
+
+def get_apache_vhosts(vhosts)
+  aliases = []
+  vhosts.each do |host|
+    aliases.push(host['servername'])
+    aliases.concat(host['serveralias'].split) if host['serveralias']
+  end
+  aliases
+end
+
+def get_nginx_vhosts(vhosts)
+  aliases = []
+  vhosts.each do |host|
+    aliases.push(host['server_name'])
+    aliases.concat(host['server_name_redirect'].split) if host['server_name_redirect']
+  end
+  aliases
+end

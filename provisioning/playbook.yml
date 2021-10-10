@@ -23,4 +23,9 @@
     - { role: geerlingguy.git }
     - { role: geerlingguy.postfix }
 
+    # Web server.
+    - { role: geerlingguy.apache, when: project_webserver == 'apache', tags: ['webserver'] }
+    - { role: geerlingguy.nginx, when: project_webserver == 'nginx', tags: ['webserver'] }
+    - { role: oscaner.php_webserver, when: project_mode == 'php-webserver', tags: ['webserver', 'php', 'database', 'xdebug'] }
+
   tasks: []

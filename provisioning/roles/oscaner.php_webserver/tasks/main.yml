@@ -1,0 +1,5 @@
+---
+# tasks file for oscaner.projectvm-php-web
+- include_tasks: dashboard.yml
+  when: php_webserver_dashboard_install_dir is defined and php_webserver_dashboard_install_dir != ''
+  tags: ['webserver', 'database', 'php']

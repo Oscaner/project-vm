@@ -1,0 +1,67 @@
+---
+# defaults file for oscaner.projectvm-php-web
+vagrant_user: vagrant
+
+_php_webserver_devtool_docroots:
+  - "{{ php_webserver_dashboard_install_dir | default('') }}"
+
+installed_extras: []
+
+# Firewall.
+firewall_enabled: true
+firewall_allowed_tcp_ports:
+  - "22"
+  - "25"
+  - "80"
+  - "81"
+  - "443"
+  - "4444"
+  - "8025"
+  - "8080"
+  - "8443"
+  - "8983"
+  - "9200"
+firewall_log_dropped_packets: false
+firewall_disable_firewalld: true
+firewall_disable_ufw: true
+
+# PHP Configuration.
+# See https://github.com/geerlingguy/ansible-role-php
+php_version: "7.4"
+php_install_recommends: no
+php_memory_limit: "192M"
+php_display_errors: "On"
+php_display_startup_errors: "On"
+php_realpath_cache_size: "1024K"
+php_sendmail_path: "/opt/mailhog/mhsendmail"
+php_opcache_enable: "1"
+php_opcache_memory_consumption: "192"
+php_opcache_max_accelerated_files: 4096
+php_max_input_vars: "4000"
+
+# Project VM defaults to using PHP-FPM with either Apache or Nginx. If you wish
+# to instead use Apache + mod_php with an Ubuntu base box, make sure you add
+# libapache2-mod-php7.0 to `extra_packages` elsewhere in this config file.
+php_enable_php_fpm: true
+php_fpm_listen: "127.0.0.1:9000"
+
+# XDebug configuration. XDebug is disabled by default for better performance.
+php_xdebug_version: 2.9.5
+php_xdebug_default_enable: 0
+php_xdebug_coverage_enable: 0
+php_xdebug_cli_disable: yes
+php_xdebug_remote_enable: 1
+php_xdebug_remote_connect_back: 1
+php_xdebug_idekey: PHPSTORM
+php_xdebug_max_nesting_level: 256
+php_xdebug_remote_host: "{{ ansible_default_ipv4.gateway }}"
+
+# PHP composer.
+# projectvm_user defined in vars/main.yml
+composer_path: /usr/bin/composer
+composer_home_path: "/home/{{ projectvm_user }}/.composer"
+composer_home_owner: "{{ projectvm_user }}"
+composer_home_group: "{{ projectvm_user }}"
+composer_global_packages: []
+composer_version_branch: '--2'
+composer_keep_updated: true

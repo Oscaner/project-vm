@@ -8,3 +8,8 @@ roles:
     version: 3.1.0
   - name: geerlingguy.repo-remi
     version: 2.0.1
+  - name: geerlingguy.apache
+    version: 3.2.0
+  - name: geerlingguy.nginx
+    version: 3.1.0
+  - name: oscaner.php_webserver

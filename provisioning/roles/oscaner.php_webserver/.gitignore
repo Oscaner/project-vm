@@ -1,0 +1,9 @@
+*.retry
+*/__pycache__
+*.pyc
+.cache
+
+# Ansible files.
+*.retry
+.galaxy_install_info
+
