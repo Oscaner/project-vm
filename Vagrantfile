@@ -120,4 +120,36 @@ Vagrant.configure('2') do |config|
     provisioner == :ansible_local && ansible.install_mode = 'pip3'
   end
 
+  # Do something for different provider.
+  # VMware Fusion.
+  config.vm.provider :vmware_fusion do |v, override|
+    # HGFS kernel module currently doesn't load correctly for native shares.
+    override.vm.synced_folder host_project_dir, '/vagrant', type: 'nfs'
+
+    v.gui = vconfig['vagrant_gui']
+    v.vmx['memsize'] = vconfig['vagrant_memory']
+    v.vmx['numvcpus'] = vconfig['vagrant_cpus']
+  end
+
+  # VirtualBox.
+  config.vm.provider :virtualbox do |v|
+    v.linked_clone = true
+    v.name = vconfig['vagrant_hostname']
+    v.memory = vconfig['vagrant_memory']
+    v.cpus = vconfig['vagrant_cpus']
+    v.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+    v.customize ['modifyvm', :id, '--ioapic', 'on']
+    v.customize ['modifyvm', :id, '--audio', 'none']
+    v.gui = vconfig['vagrant_gui']
+  end
+
+  # Parallels.
+  config.vm.provider :parallels do |p, override|
+    override.vm.box = vconfig['vagrant_box']
+    p.name = vconfig['vagrant_hostname']
+    p.memory = vconfig['vagrant_memory']
+    p.cpus = vconfig['vagrant_cpus']
+    p.update_guest_tools = true
+  end
+
 end

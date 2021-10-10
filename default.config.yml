@@ -9,6 +9,10 @@ vagrant_machine_name: projectvm
 vagrant_ip: 192.168.88.88
 vagrant_public_ip: ""
 
+vagrant_gui: false
+vagrant_memory: 2048
+vagrant_cpus: 1
+
 # Minimum required versions.
 project_vagrant_version_min: '2.2.0'
 project_ansible_version_min: '2.8'
