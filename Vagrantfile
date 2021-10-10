@@ -152,4 +152,17 @@ Vagrant.configure('2') do |config|
     p.update_guest_tools = true
   end
 
+  # Cache packages and dependencies if vagrant-cachier plugin is present.
+  if Vagrant.has_plugin?('vagrant-cachier')
+    config.cache.scope = :box
+    config.cache.auto_detect = false
+    config.cache.enable :apt
+    # Cache the composer directory.
+    config.cache.enable :generic, cache_dir: '/home/vagrant/.composer/cache'
+    config.cache.synced_folder_opts = {
+      type: vconfig['vagrant_synced_folder_default_type'],
+      nfs_udp: false
+    }
+  end
+
 end
