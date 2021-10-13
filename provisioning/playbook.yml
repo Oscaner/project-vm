@@ -17,4 +17,10 @@
     # @see https://github.com/geerlingguy/drupal-vm/issues/2154
     - { role: projectvm.vagrant-nfs-fix, when: vagrant_nfs_fix_enabled }
 
+    # Essential roles.
+    - { role: geerlingguy.repo-epel, when: ansible_os_family == 'RedHat' }
+    - { role: geerlingguy.repo-remi, when: ansible_os_family == 'RedHat', tags: ['webserver', 'php'] }
+    - { role: geerlingguy.git }
+    - { role: geerlingguy.postfix }
+
   tasks: []
