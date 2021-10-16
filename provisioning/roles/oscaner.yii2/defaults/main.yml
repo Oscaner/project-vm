@@ -1,0 +1,22 @@
+---
+# defaults file for oscaner.yii2
+yii2_deploy_dir: "{{ project_deploy_dir | default('/var/www/yii2') }}"
+
+yii2_advanced: true
+yii2_owner: "{{ ansible_ssh_user | default(ansible_env.SUDO_USER, true) | default(ansible_env.USER, true) | default(ansible_user_id) }}"
+
+# Set 'yii2_build_composer_project' to true if you are using Composer's create-project
+# as a site deployment strategy.
+yii2_build_composer_project: true
+yii2_composer_path: "{{ yii2_deploy_dir }}/composer.json"
+yii2_composer_install_dir: "{{ yii2_deploy_dir }}"
+yii2_composer_project_options: "--prefer-dist --stability dev --no-interaction"
+yii2_composer_dependencies: []
+
+# Set this to 'false' if you don't need to install Yii2.
+yii2_install_site: true
+# Set this to which environment you want to install.
+# See 'environments/index.php'
+yii2_install_environment: "Development"
+# Can be either 'y', 'q', 'n' or 'a'.
+yii2_install_overwrite: 'y'

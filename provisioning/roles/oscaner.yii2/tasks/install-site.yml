@@ -1,0 +1,21 @@
+---
+- name: Check if site is already installed.
+  ansible.builtin.stat:
+    path: "{{ yii2_deploy_dir }}/yii"
+  register: yii2_command
+  ignore_errors: true
+
+- name: Configure database correctly if use PostgreSQL.
+  ansible.builtin.command: psql -c "ALTER DATABASE {{ project_db_name }} SET bytea_output = 'escape';"
+  when: project_db_backend == 'pgsql'
+  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
+  vars:
+    ansible_ssh_pipelining: true
+
+- name: Install Yii2 with init.
+  command: >
+    {{ php_executable }} init --env={{ yii2_install_environment }} --overwrite={{ yii2_install_overwrite }}
+  args:
+    chdir: "{{ yii2_deploy_dir }}"
+  notify: clear opcache
+  when: not yii2_command.stat.exists

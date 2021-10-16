@@ -17,6 +17,8 @@ vagrant_cpus: 1
 # Settings for project.
 # The project_mode can be 'php-webserver'.
 project_mode: 'php-webserver'
+# The project_type can be 'yii2'.
+project_type: 'yii2'
 project_domain: "{{ vagrant_hostname }}"
 project_deploy_dir: "/var/www/projectvm"
 # The database system to use. Can be either 'mysql' or 'pgsql'.

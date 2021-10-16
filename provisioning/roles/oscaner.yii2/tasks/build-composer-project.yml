@@ -1,0 +1,51 @@
+---
+- name: Delete old /tmp/yii2-composer-project
+  ansible.builtin.file:
+    path: "/tmp/yii2-composer-project"
+    state: absent
+  when: not yii2_site_exists
+
+- name: Define yii2_composer_project_package.
+  ansible.builtin.set_fact:
+    yii2_composer_project_package: >-
+      {{ 'yiisoft/yii2-app-advanced' if yii2_advanced else 'yiisoft/yii2-app-basic' }}
+  when: yii2_composer_project_package is not defined
+
+- name: Generate Yii2 project with composer package in /tmp/yii2-composer-project (this may take a while).
+  ansible.builtin.command: >
+    {{ composer_path }} create-project
+    {{ yii2_composer_project_package }} /tmp/yii2-composer-project
+    {{ yii2_composer_project_options | default('--prefer-dist --no-interaction') }}
+  when: not yii2_site_exists
+  become: false
+  environment:
+    COMPOSER_PROCESS_TIMEOUT: 1200
+    COMPOSER_MEMORY_LIMIT: '-1'
+
+- name: Ensure yii2_composer_install_dir directory has proper permissions.
+  ansible.builtin.file:
+    path: "{{ yii2_composer_install_dir }}"
+    state: directory
+    owner: "{{ yii2_owner }}"
+    group: "{{ yii2_owner }}"
+    mode: 0775
+  when: not yii2_site_exists
+  failed_when: false
+
+- name: Move Yii2 project files to yii2_composer_install_dir (this may take a while).
+  ansible.builtin.command: >
+    cp -r /tmp/yii2-composer-project/. {{ yii2_composer_install_dir }}/
+    creates={{ yii2_deploy_dir }}/init
+  become: false
+  when: not yii2_site_exists
+
+- name: Install dependencies with composer require (this may take a while).
+  composer:
+    command: require
+    arguments: "{{ item }}"
+    working_dir: "{{ yii2_composer_install_dir }}"
+  with_items: "{{ yii2_composer_dependencies | default([]) }}"
+  become: false
+  environment:
+    COMPOSER_PROCESS_TIMEOUT: 1200
+    COMPOSER_MEMORY_LIMIT: '-1'

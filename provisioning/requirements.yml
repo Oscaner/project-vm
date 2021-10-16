@@ -13,3 +13,4 @@ roles:
   - name: geerlingguy.nginx
     version: 3.1.0
   - name: oscaner.php_webserver
+  - name: oscaner.yii2

@@ -1,0 +1,19 @@
+---
+# tasks file for oscaner.yii2
+- name: Check if Yii2 is already set up.
+  ansible.builtin.stat:
+    path: "{{ yii2_deploy_dir }}/init"
+  register: yii2_init
+  ignore_errors: true
+
+- name: Define yii2_site_exists.
+  ansible.builtin.set_fact:
+    yii2_site_exists: "{{ yii2_init.stat.exists|default(false) }}"
+
+# Build a composer project if configured.
+- include_tasks: build-composer-project.yml
+  when: yii2_build_composer_project
+
+# Init site if configured.
+- include_tasks: install-site.yml
+  when: yii2_install_site
